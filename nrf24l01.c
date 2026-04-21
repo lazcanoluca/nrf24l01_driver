@@ -15,7 +15,8 @@
 // Datasheet section 9.1: Register map table
 
 // REGISTER ADDRESSES
-typedef enum {
+typedef enum
+{
     NRF24_REG_CONFIG = 0x00,
     NRF24_REG_EN_AA = 0x01,
     NRF24_REG_EN_RXADDR = 0x02,
@@ -121,7 +122,8 @@ typedef enum {
 // Time CE is pulsed high to start a transmission.
 #define NRF24_TX_PULSE_DELAY_MS 1U
 
-static bool nrf24l01_flush_tx() {
+static bool nrf24l01_flush_tx()
+{
     nrf24l01_port_select();
     nrf24l01_port_transmit_byte(NRF24_CMD_FLUSH_TX);
     nrf24l01_port_deselect();
@@ -129,7 +131,8 @@ static bool nrf24l01_flush_tx() {
     return true;
 }
 
-static bool nrf24l01_flush_rx() {
+static bool nrf24l01_flush_rx()
+{
     nrf24l01_port_select();
     nrf24l01_port_transmit_byte(NRF24_CMD_FLUSH_RX);
     nrf24l01_port_deselect();
@@ -142,7 +145,8 @@ static bool nrf24l01_flush_rx() {
 // address (CONFIG)
 // and in the next byte, the content
 static bool nrf24l01_set_register_config(bool en_crc, bool crco, bool pwr_up,
-                                         bool prim_rx) {
+                                         bool prim_rx)
+{
     uint8_t reg = 0;
 
     if (en_crc)
@@ -170,7 +174,8 @@ static bool
 nrf24l01_set_register_enable_autoack(bool autoack_p0, bool autoack_p1
                                      // bool autoack_p2, bool autoack_p3,
                                      // bool autoack_p4, bool autoack_p5
-) {
+)
+{
     uint8_t reg = 0;
 
     if (autoack_p0)
@@ -199,13 +204,15 @@ nrf24l01_set_register_enable_autoack(bool autoack_p0, bool autoack_p1
     return true;
 }
 
-typedef struct {
+typedef struct
+{
     bool pipe_0;
     bool pipe_1;
 } nrf24l01_register_enable_autoack_t;
 
 static bool nrf24l01_get_register_enable_autoack(
-    nrf24l01_register_enable_autoack_t *autoack) {
+    nrf24l01_register_enable_autoack_t *autoack)
+{
     uint8_t reg = 0;
 
     if (autoack == NULL)
@@ -226,7 +233,8 @@ static bool nrf24l01_get_register_enable_autoack(
 static bool nrf24l01_set_register_enabled_rx(bool enable_p0, bool enable_p1
                                              //  bool enable_p2, bool enable_p3,
                                              //  bool enable_p4, bool enable_p5
-) {
+)
+{
     uint8_t reg = 0;
 
     if (enable_p0)
@@ -255,13 +263,15 @@ static bool nrf24l01_set_register_enabled_rx(bool enable_p0, bool enable_p1
     return true;
 }
 
-typedef struct {
+typedef struct
+{
     bool pipe_0;
     bool pipe_1;
 } nrf24l01_register_enabled_rx_t;
 
 static bool
-nrf24l01_get_register_enabled_rx(nrf24l01_register_enabled_rx_t *enabled_rx) {
+nrf24l01_get_register_enabled_rx(nrf24l01_register_enabled_rx_t *enabled_rx)
+{
     uint8_t reg = 0;
 
     if (enabled_rx == NULL)
@@ -279,7 +289,8 @@ nrf24l01_get_register_enabled_rx(nrf24l01_register_enabled_rx_t *enabled_rx) {
 }
 
 // SETUP_AW
-static bool nrf24l01_set_register_setup_aw(void) {
+static bool nrf24l01_set_register_setup_aw(void)
+{
     nrf24l01_port_select();
     nrf24l01_port_transmit_byte(NRF24_CMD_W_REGISTER | NRF24_REG_SETUP_AW);
     nrf24l01_port_transmit_byte(NRF24_REG_SETUP_AW_5_BYTES_VALUE);
@@ -291,7 +302,8 @@ static bool nrf24l01_set_register_setup_aw(void) {
 // SETUP_RETR
 static bool
 nrf24l01_set_register_setup_retr(nrf24l01_retransmit_delay_t retransmit_delay,
-                                 uint8_t retransmit_count) {
+                                 uint8_t retransmit_count)
+{
     uint8_t reg;
 
     if (retransmit_count > 15U)
@@ -311,10 +323,12 @@ nrf24l01_set_register_setup_retr(nrf24l01_retransmit_delay_t retransmit_delay,
 // RF_SETUP
 static bool nrf24l01_set_register_rf_setup(nrf24l01_variant_t variant,
                                            nrf24l01_datarate_t datarate,
-                                           nrf24l01_pa_level_t pa_level) {
+                                           nrf24l01_pa_level_t pa_level)
+{
     uint8_t reg = 0U;
 
-    switch (datarate) {
+    switch (datarate)
+    {
     case NRF24L01_DATARATE_250KBPS:
         if (variant != NRF24L01_VARIANT_PLUS)
             return false;
@@ -330,7 +344,8 @@ static bool nrf24l01_set_register_rf_setup(nrf24l01_variant_t variant,
     }
 
     // TODO: dont magic values, have an enum with typed
-    switch (pa_level) {
+    switch (pa_level)
+    {
     case NRF24L01_PA_MIN:
         break;
     case NRF24L01_PA_LOW:
@@ -363,7 +378,8 @@ static bool nrf24l01_set_register_rf_setup(nrf24l01_variant_t variant,
 // TODO: cd reg
 
 // RF_CH
-static bool nrf24l01_set_register_rf_channel(uint8_t channel) {
+static bool nrf24l01_set_register_rf_channel(uint8_t channel)
+{
     uint8_t reg = channel & NRF24_REG_RF_CH_MASK;
 
     nrf24l01_port_select();
@@ -377,13 +393,15 @@ static bool nrf24l01_set_register_rf_channel(uint8_t channel) {
 // RF_SETUP
 // static bool nrf24l01_set_register_rf_setup() {}
 
-typedef enum {
+typedef enum
+{
     NRF24L01_REGISTER_STATUS_RX_PIPE_0 = 0,
     NRF24L01_REGISTER_STATUS_RX_PIPE_1 = 1,
     NRF24L01_REGISTER_STATUS_RX_PIPE_EMPTY = 7,
 } nrf24l01_register_status_rx_pipe_t;
 
-typedef struct {
+typedef struct
+{
     bool rx_data_ready;                            // RX_DR
     bool tx_data_sent;                             // TX_DS
     bool max_retransmits;                          // MAX_RT
@@ -392,7 +410,8 @@ typedef struct {
 } nrf24l01_register_status_t;
 
 // STATUS
-static bool nrf24l01_get_register_status(nrf24l01_register_status_t *status) {
+static bool nrf24l01_get_register_status(nrf24l01_register_status_t *status)
+{
     uint8_t reg;
 
     if (status == NULL)
@@ -416,7 +435,8 @@ static bool nrf24l01_get_register_status(nrf24l01_register_status_t *status) {
 
 static bool nrf24l01_set_register_status(bool clear_rx_data_ready,
                                          bool clear_tx_data_sent,
-                                         bool clear_max_retransmits) {
+                                         bool clear_max_retransmits)
+{
     uint8_t reg = 0U;
 
     if (clear_rx_data_ready)
@@ -438,7 +458,8 @@ static bool nrf24l01_set_register_status(bool clear_rx_data_ready,
 
 // RX_ADDR_0
 static bool nrf24l01_set_register_rx_addr_p0(
-    const uint8_t address[NRF24L01_ADDRESS_WIDTH]) {
+    const uint8_t address[NRF24L01_ADDRESS_WIDTH])
+{
     if (address == NULL)
         return false;
 
@@ -452,7 +473,8 @@ static bool nrf24l01_set_register_rx_addr_p0(
 
 // RX_ADDR_1
 static bool nrf24l01_set_register_rx_addr_p1(
-    const uint8_t address[NRF24L01_ADDRESS_WIDTH]) {
+    const uint8_t address[NRF24L01_ADDRESS_WIDTH])
+{
     if (address == NULL)
         return false;
 
@@ -466,7 +488,8 @@ static bool nrf24l01_set_register_rx_addr_p1(
 
 // TX_ADDR
 static bool
-nrf24l01_set_register_tx_addr(const uint8_t address[NRF24L01_ADDRESS_WIDTH]) {
+nrf24l01_set_register_tx_addr(const uint8_t address[NRF24L01_ADDRESS_WIDTH])
+{
     if (address == NULL)
         return false;
 
@@ -479,7 +502,8 @@ nrf24l01_set_register_tx_addr(const uint8_t address[NRF24L01_ADDRESS_WIDTH]) {
 }
 
 // RX_PW_P0
-static bool nrf24l01_set_register_rx_payload_width_p0(uint8_t width) {
+static bool nrf24l01_set_register_rx_payload_width_p0(uint8_t width)
+{
     if (width > 32U)
         return false;
 
@@ -494,7 +518,8 @@ static bool nrf24l01_set_register_rx_payload_width_p0(uint8_t width) {
 }
 
 // RX_PW_P1
-static bool nrf24l01_set_register_rx_payload_width_p1(uint8_t width) {
+static bool nrf24l01_set_register_rx_payload_width_p1(uint8_t width)
+{
     if (width > 32U)
         return false;
 
@@ -508,12 +533,13 @@ static bool nrf24l01_set_register_rx_payload_width_p1(uint8_t width) {
     return true;
 }
 
-bool nrf24l01_send(nrf24l01_t *radio, const uint8_t *payload, size_t length) {
+bool nrf24l01_send(const uint8_t *payload, size_t length)
+{
     uint8_t padded_payload[NRF24_PAYLOAD_MAX_SIZE] = {0};
     nrf24l01_register_status_t status;
     uint32_t polls_remaining = NRF24_TX_STATUS_POLL_COUNT;
 
-    if ((radio == NULL) || (payload == NULL))
+    if (payload == NULL)
         return false;
 
     if (length > NRF24_PAYLOAD_MAX_SIZE)
@@ -536,16 +562,19 @@ bool nrf24l01_send(nrf24l01_t *radio, const uint8_t *payload, size_t length) {
     nrf24l01_port_set_ce_low();
 
     // TODO: will be removed by feature "irq based"
-    while (polls_remaining-- > 0U) {
+    while (polls_remaining-- > 0U)
+    {
         if (!nrf24l01_get_register_status(&status))
             return false;
 
-        if (status.tx_data_sent) {
+        if (status.tx_data_sent)
+        {
             nrf24l01_set_register_status(false, true, false);
             return true;
         }
 
-        if (status.max_retransmits) {
+        if (status.max_retransmits)
+        {
             nrf24l01_set_register_status(false, false, true);
             nrf24l01_flush_tx();
             return false;
@@ -557,10 +586,11 @@ bool nrf24l01_send(nrf24l01_t *radio, const uint8_t *payload, size_t length) {
     return false;
 }
 
-bool nrf24l01_recv(nrf24l01_t *radio, uint8_t *buffer, size_t buffer_len) {
+bool nrf24l01_recv(uint8_t *buffer, size_t buffer_len)
+{
     nrf24l01_register_status_t status;
 
-    if ((radio == NULL) || (buffer == NULL))
+    if (buffer == NULL)
         return false;
 
     if (buffer_len < NRF24_PAYLOAD_MAX_SIZE)
@@ -586,8 +616,9 @@ bool nrf24l01_recv(nrf24l01_t *radio, uint8_t *buffer, size_t buffer_len) {
     return true;
 }
 
-bool nrf24l01_init(nrf24l01_t *radio, const nrf24l01_config_t *config) {
-    if ((radio == NULL) || (config == NULL))
+bool nrf24l01_init(const nrf24l01_config_t *config)
+{
+    if (config == NULL)
         return false;
 
     nrf24l01_port_set_ce_low();
@@ -630,10 +661,9 @@ bool nrf24l01_init(nrf24l01_t *radio, const nrf24l01_config_t *config) {
     return true;
 }
 
-bool nrf24l01_set_tx_address(nrf24l01_t *radio, const uint8_t *address) {
+bool nrf24l01_set_tx_address(const uint8_t *address)
+{
     nrf24l01_register_enable_autoack_t autoack;
-
-    (void)radio;
 
     if (address == NULL)
         return false;
@@ -650,15 +680,14 @@ bool nrf24l01_set_tx_address(nrf24l01_t *radio, const uint8_t *address) {
     return true;
 }
 
-bool nrf24l01_set_pipe_rx_address(
-    nrf24l01_t *radio, nrf24l01_pipe_t pipe,
-    const uint8_t address[NRF24L01_ADDRESS_WIDTH]) {
-    (void)radio;
-
+bool nrf24l01_set_pipe_rx_address(nrf24l01_pipe_t pipe,
+                                  const uint8_t address[NRF24L01_ADDRESS_WIDTH])
+{
     if (address == NULL)
         return false;
 
-    switch (pipe) {
+    switch (pipe)
+    {
     case NRF24L01_PIPE_0:
         return nrf24l01_set_register_rx_addr_p0(address);
     case NRF24L01_PIPE_1:
@@ -668,11 +697,10 @@ bool nrf24l01_set_pipe_rx_address(
     }
 }
 
-bool nrf24l01_config_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe,
-                          const nrf24l01_pipe_config_t *config) {
+bool nrf24l01_config_pipe(nrf24l01_pipe_t pipe,
+                          const nrf24l01_pipe_config_t *config)
+{
     nrf24l01_register_enable_autoack_t autoack;
-
-    (void)radio;
 
     if (config == NULL)
         return false;
@@ -682,7 +710,8 @@ bool nrf24l01_config_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe,
 
     // TODO: maybe refactor so we can address by pipe numbers instead of having
     // to switch
-    switch (pipe) {
+    switch (pipe)
+    {
     case NRF24L01_PIPE_0:
         if (!nrf24l01_set_register_rx_addr_p0(config->address))
             return false;
@@ -702,7 +731,8 @@ bool nrf24l01_config_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe,
     if (!nrf24l01_get_register_enable_autoack(&autoack))
         return false;
 
-    switch (pipe) {
+    switch (pipe)
+    {
     case NRF24L01_PIPE_0:
         autoack.pipe_0 = config->auto_ack;
         break;
@@ -716,15 +746,15 @@ bool nrf24l01_config_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe,
     return nrf24l01_set_register_enable_autoack(autoack.pipe_0, autoack.pipe_1);
 }
 
-bool nrf24l01_open_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe) {
+bool nrf24l01_open_pipe(nrf24l01_pipe_t pipe)
+{
     nrf24l01_register_enabled_rx_t enabled_rx;
-
-    (void)radio;
 
     if (!nrf24l01_get_register_enabled_rx(&enabled_rx))
         return false;
 
-    switch (pipe) {
+    switch (pipe)
+    {
     case NRF24L01_PIPE_0:
         enabled_rx.pipe_0 = true;
         break;
@@ -739,15 +769,15 @@ bool nrf24l01_open_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe) {
                                             enabled_rx.pipe_1);
 }
 
-bool nrf24l01_close_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe) {
+bool nrf24l01_close_pipe(nrf24l01_pipe_t pipe)
+{
     nrf24l01_register_enabled_rx_t enabled_rx;
-
-    (void)radio;
 
     if (!nrf24l01_get_register_enabled_rx(&enabled_rx))
         return false;
 
-    switch (pipe) {
+    switch (pipe)
+    {
     case NRF24L01_PIPE_0:
         enabled_rx.pipe_0 = false;
         break;
@@ -762,9 +792,8 @@ bool nrf24l01_close_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe) {
                                             enabled_rx.pipe_1);
 }
 
-bool nrf24l01_set_mode_tx(nrf24l01_t *radio) {
-    (void)radio;
-
+bool nrf24l01_set_mode_tx()
+{
     nrf24l01_port_set_ce_low();
     nrf24l01_set_register_status(true, true, true);
     nrf24l01_set_register_config(true, true, true, false);
@@ -772,9 +801,8 @@ bool nrf24l01_set_mode_tx(nrf24l01_t *radio) {
     return true;
 }
 
-bool nrf24l01_set_mode_rx(nrf24l01_t *radio) {
-    (void)radio;
-
+bool nrf24l01_set_mode_rx()
+{
     nrf24l01_port_set_ce_low();
     nrf24l01_set_register_status(true, true, true);
     nrf24l01_set_register_config(true, true, true, true);
@@ -783,10 +811,9 @@ bool nrf24l01_set_mode_rx(nrf24l01_t *radio) {
     return true;
 }
 
-bool nrf24l01_available(nrf24l01_t *radio) {
+bool nrf24l01_available()
+{
     nrf24l01_register_status_t status;
-
-    (void)radio;
 
     if (!nrf24l01_get_register_status(&status))
         return false;

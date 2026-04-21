@@ -11,7 +11,8 @@
 /**
  * @brief Supported RX pipes in the current driver.
  */
-typedef enum {
+typedef enum
+{
     NRF24L01_PIPE_0,
     NRF24L01_PIPE_1,
 } nrf24l01_pipe_t;
@@ -19,19 +20,20 @@ typedef enum {
 /**
  * @brief Radio operating mode.
  */
-typedef enum {
+typedef enum
+{
     NRF24L01_MODE_RX,
     NRF24L01_MODE_TX,
 } nrf24l01_mode_t;
 
-/**
- * @brief Driver handle.
- *
- * The driver is intentionally stateless. The register file is treated as the
- * source of truth, so this handle is currently opaque and empty.
- */
-typedef struct {
-} nrf24l01_t;
+// /**
+//  * @brief Driver handle.
+//  *
+//  * The driver is intentionally stateless. The register file is treated as the
+//  * source of truth, so this handle is currently opaque and empty.
+//  */
+// typedef struct {
+// } nrf24l01_t;
 
 /**
  * @brief Initialize the radio with a global configuration.
@@ -60,7 +62,7 @@ typedef struct {
  * nrf24l01_init(&radio, &config);
  * @endcode
  */
-bool nrf24l01_init(nrf24l01_t *radio, const nrf24l01_config_t *config);
+bool nrf24l01_init(const nrf24l01_config_t *config);
 
 /**
  * @brief Configure an RX pipe.
@@ -90,7 +92,7 @@ bool nrf24l01_init(nrf24l01_t *radio, const nrf24l01_config_t *config);
  * nrf24l01_open_pipe(&radio, NRF24L01_PIPE_1);
  * @endcode
  */
-bool nrf24l01_config_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe,
+bool nrf24l01_config_pipe(nrf24l01_pipe_t pipe,
                           const nrf24l01_pipe_config_t *config);
 
 /**
@@ -102,7 +104,7 @@ bool nrf24l01_config_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe,
  *
  * @warning Configure the pipe before opening it.
  */
-bool nrf24l01_open_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe);
+bool nrf24l01_open_pipe(nrf24l01_pipe_t pipe);
 
 /**
  * @brief Disable an RX pipe.
@@ -111,7 +113,7 @@ bool nrf24l01_open_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe);
  * @param pipe RX pipe to disable.
  * @return `true` if the pipe is disabled, `false` otherwise.
  */
-bool nrf24l01_close_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe);
+bool nrf24l01_close_pipe(nrf24l01_pipe_t pipe);
 
 /**
  * @brief Change the RX address of a single pipe.
@@ -124,9 +126,8 @@ bool nrf24l01_close_pipe(nrf24l01_t *radio, nrf24l01_pipe_t pipe);
  * @warning If pipe 0 auto-ack is enabled, later calls to
  * `nrf24l01_set_tx_address()` may overwrite its RX address again.
  */
-bool nrf24l01_set_pipe_rx_address(
-    nrf24l01_t *radio, nrf24l01_pipe_t pipe,
-    const uint8_t address[NRF24L01_ADDRESS_WIDTH]);
+bool nrf24l01_set_pipe_rx_address(nrf24l01_pipe_t pipe,
+                                  const uint8_t address[NRF24L01_ADDRESS_WIDTH]);
 
 /**
  * @brief Set the current transmit destination address.
@@ -146,7 +147,7 @@ bool nrf24l01_set_pipe_rx_address(
  * nrf24l01_set_tx_address(&radio, remote);
  * @endcode
  */
-bool nrf24l01_set_tx_address(nrf24l01_t *radio, const uint8_t *address);
+bool nrf24l01_set_tx_address(const uint8_t *address);
 
 /**
  * @brief Put the radio in TX mode.
@@ -156,7 +157,7 @@ bool nrf24l01_set_tx_address(nrf24l01_t *radio, const uint8_t *address);
  *
  * @warning Call this before `nrf24l01_send()`.
  */
-bool nrf24l01_set_mode_tx(nrf24l01_t *radio);
+bool nrf24l01_set_mode_tx();
 
 /**
  * @brief Put the radio in RX mode.
@@ -167,7 +168,7 @@ bool nrf24l01_set_mode_tx(nrf24l01_t *radio);
  * @warning Call this before using `nrf24l01_available()` or
  * `nrf24l01_recv()`.
  */
-bool nrf24l01_set_mode_rx(nrf24l01_t *radio);
+bool nrf24l01_set_mode_rx();
 
 // /**
 //  * @brief Enable or disable auto-ack on all currently supported pipes.
@@ -202,7 +203,7 @@ bool nrf24l01_set_mode_rx(nrf24l01_t *radio);
  * nrf24l01_send(&radio, message, sizeof(message));
  * @endcode
  */
-bool nrf24l01_send(nrf24l01_t *radio, const uint8_t *payload, size_t length);
+bool nrf24l01_send(const uint8_t *payload, size_t length);
 
 /**
  * @brief Receive one full fixed-size payload.
@@ -219,7 +220,7 @@ bool nrf24l01_send(nrf24l01_t *radio, const uint8_t *payload, size_t length);
  * @warning Use this in RX mode and only after `nrf24l01_available()` returns
  * `true`.
  */
-bool nrf24l01_recv(nrf24l01_t *radio, uint8_t *buffer, size_t buffer_len);
+bool nrf24l01_recv(uint8_t *buffer, size_t buffer_len);
 
 /**
  * @brief Check whether at least one payload is waiting in the RX FIFO.
@@ -236,6 +237,6 @@ bool nrf24l01_recv(nrf24l01_t *radio, uint8_t *buffer, size_t buffer_len);
  * }
  * @endcode
  */
-bool nrf24l01_available(nrf24l01_t *radio);
+bool nrf24l01_available();
 
 #endif /* NRF24L01_H */
